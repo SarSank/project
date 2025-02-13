@@ -1,97 +1,202 @@
-import React from 'react';
-import { Building2, Bell, CreditCard, PieChart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './Dashboard.css';
 
-const mockUser = {
-  name: 'John Doe',
-  email: 'john@example.com',
-  savedLoans: ['1', '2']
-};
+interface UserDetails {
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+    dateOfBirth: string;
+    panCard: string;
+    aadharNumber: string;
+    occupation: string;
+    annualIncome: string;
+}
 
-const Dashboard: React.FC = () => {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-lg shadow-md">
-          {/* Header */}
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          </div>
+const Dashboard = () => {
+    const [userDetails, setUserDetails] = useState<UserDetails>({
+        fullName: '',
+        email: '',
+        phone: '',
+        address: '',
+        dateOfBirth: '',
+        panCard: '',
+        aadharNumber: '',
+        occupation: '',
+        annualIncome: ''
+    });
 
-          {/* Main Content */}
-          <div className="p-6">
-            {/* User Info */}
-            <div className="bg-blue-600 text-white rounded-lg p-6 mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold">{mockUser.name}</h2>
-                  <p className="text-blue-100">{mockUser.email}</p>
-                </div>
-                <Building2 className="h-12 w-12 text-blue-100" />
-              </div>
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/auth');
+        }
+    }, [navigate]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setUserDetails(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post('http://localhost:5000/api/user/details', userDetails, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert('Profile created successfully!');
+        } catch (error) {
+            console.error('Error creating profile:', error);
+            alert('Failed to create profile. Please try again.');
+        }
+    };
+
+    return (
+        <div className="dashboard-container">
+            <div className="welcome-section">
+                <h1>Complete Your Profile</h1>
+                <p>Please provide your details to continue</p>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-50 rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Active Applications</h3>
-                  <CreditCard className="h-6 w-6 text-blue-600" />
+            <form onSubmit={handleSubmit} className="profile-form">
+                <div className="form-group">
+                    <label htmlFor="fullName">Full Name (as per PAN Card)</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        value={userDetails.fullName}
+                        onChange={handleInputChange}
+                        placeholder="Enter your full name"
+                        required
+                    />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">2</p>
-              </div>
 
-              <div className="bg-gray-50 rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Saved Loans</h3>
-                  <Bell className="h-6 w-6 text-blue-600" />
+                <div className="form-group">
+                    <label htmlFor="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={userDetails.email}
+                        onChange={handleInputChange}
+                        placeholder="Enter your email"
+                        required
+                    />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">{mockUser.savedLoans.length}</p>
-              </div>
 
-              <div className="bg-gray-50 rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Rate Alerts</h3>
-                  <PieChart className="h-6 w-6 text-blue-600" />
+                <div className="form-group">
+                    <label htmlFor="phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={userDetails.phone}
+                        onChange={handleInputChange}
+                        placeholder="Enter 10-digit mobile number"
+                        pattern="[0-9]{10}"
+                        required
+                    />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">3</p>
-              </div>
-            </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-              </div>
-              <div className="divide-y divide-gray-200">
-                <div className="px-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">Personal Loan Application</p>
-                      <p className="text-sm text-gray-600">First National Bank</p>
-                    </div>
-                    <span className="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">
-                      Pending
-                    </span>
-                  </div>
+                <div className="form-group">
+                    <label htmlFor="dateOfBirth">Date of Birth</label>
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={userDetails.dateOfBirth}
+                        onChange={handleInputChange}
+                        required
+                    />
                 </div>
-                <div className="px-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">Business Loan Application</p>
-                      <p className="text-sm text-gray-600">City Trust</p>
-                    </div>
-                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
-                      Approved
-                    </span>
-                  </div>
+
+                <div className="form-group">
+                    <label htmlFor="panCard">PAN Card Number</label>
+                    <input
+                        type="text"
+                        id="panCard"
+                        name="panCard"
+                        value={userDetails.panCard}
+                        onChange={handleInputChange}
+                        placeholder="ABCDE1234F"
+                        pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                        required
+                    />
                 </div>
-              </div>
-            </div>
-          </div>
+
+                <div className="form-group">
+                    <label htmlFor="aadharNumber">Aadhar Number</label>
+                    <input
+                        type="text"
+                        id="aadharNumber"
+                        name="aadharNumber"
+                        value={userDetails.aadharNumber}
+                        onChange={handleInputChange}
+                        placeholder="12-digit Aadhar number"
+                        pattern="[0-9]{12}"
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="address">Current Address</label>
+                    <textarea
+                        id="address"
+                        name="address"
+                        value={userDetails.address}
+                        onChange={handleInputChange}
+                        placeholder="Enter your complete address"
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="occupation">Occupation</label>
+                    <select
+                        id="occupation"
+                        name="occupation"
+                        value={userDetails.occupation}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="">Select Occupation</option>
+                        <option value="salaried">Salaried</option>
+                        <option value="self-employed">Self Employed</option>
+                        <option value="business">Business Owner</option>
+                        <option value="student">Student</option>
+                        <option value="retired">Retired</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="annualIncome">Annual Income</label>
+                    <input
+                        type="number"
+                        id="annualIncome"
+                        name="annualIncome"
+                        value={userDetails.annualIncome}
+                        onChange={handleInputChange}
+                        placeholder="Enter annual income in ₹"
+                        min="0"
+                        required
+                    />
+                </div>
+
+                <button type="submit" className="submit-btn">
+                    Create Profile
+                </button>
+            </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Dashboard;

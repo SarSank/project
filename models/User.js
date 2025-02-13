@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -15,10 +15,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    personalDetails: {
+        fullName: String,
+        dateOfBirth: String,
+        phone: String,
+        address: String,
+        occupation: String,
+        annualIncome: Number
+    },
+    bankingDetails: {
+        accountNumber: String,
+        bankName: String,
+        ifscCode: String
+    },
+    loanHistory: [{
+        date: String,
+        type: String,
+        amount: Number,
+        status: String
+    }],
     createdAt: {
         type: Date,
         default: Date.now
     }
 });
 
-export default mongoose.model('User', userSchema); 
+export default mongoose.model('User', UserSchema); 

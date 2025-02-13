@@ -1,0 +1,128 @@
+.navbar {
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    color: #333;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #007bff;
+}
+
+.nav-link.logout {
+    color: #dc3545;
+}
+
+.nav-link.logout:hover {
+    color: #c82333;
+}
+
+.nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    color: #333;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+.mobile-dropdown-content {
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+}
+
+.mobile-dropdown-content .nav-link {
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+}
+
+/* Adjust spacing in desktop menu */
+.nav-links.desktop-menu {
+    gap: 1.5rem;
+}
+
+/* Make sure dropdown items don't inherit flex properties */
+.dropdown-content .dropdown-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .navbar-container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .navbar-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .mobile-nav {
+        padding: 1rem;
+    }
+
+    .mobile-nav .nav-link {
+        padding: 0.75rem 0;
+    }
+
+    .mobile-dropdown {
+        margin: 0.5rem 0;
+    }
+} 
